@@ -11,6 +11,7 @@ const { mongoose_validator, last_validator } = require('./routes/middlewares/err
 const admin = require('./routes/admin')
 const cookiesParser = require('cookie-parser')
 const { adminAuth } = require('./routes/middlewares/adminmiddleware')
+const category = require('./routes/categories')
 
 mongoose.connect('mongodb://localhost:27017/blog')
 
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 })
 app.use('/articles', articles);
 app.use('/admin', admin);
+app.use('/categories', category);
 app.use(mongoose_validator);
 app.use(last_validator);
 

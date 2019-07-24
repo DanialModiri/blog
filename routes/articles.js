@@ -5,8 +5,7 @@ const multer = require('multer');
 const md5 = require('md5');
 const uuid = require('uuid')
 const path = require('path')
-
-
+const { role, adminAuth } = require('./middlewares/adminmiddleware')
 const ALLOWED_EXTNAMES = [
     '.jpge',
     '.jpg',
@@ -55,7 +54,7 @@ const upload_image_promise = (req, res) => {
     });
 };
 
-router.post('/', async (req, res) => {
+router.post('/', adminAuth, role('SUPER_ADMIN'), async (req, res) => {
     const { image, images } = await upload_image_promise(req, res);
     const newArticle = new Article({
         ...req.body,
@@ -86,7 +85,7 @@ function upload_edit_article_async(req, res) {
     })
 }
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', adminAuth, async (req, res) => {
     const { new_images, image } = await upload_edit_article_async(req, res);
     let newImage = {};
     if(image)
@@ -115,7 +114,7 @@ router.get('/', async (req, res) => {
     res.send(articles);
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', adminAuth, role('SUPER_ADMIN'), async (req, res) => {
     await Article.findByIdAndDelete(req.params.id).exec();
     res.send('حذف شد');
 })
