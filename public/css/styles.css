@@ -1,0 +1,75 @@
+* {
+    font-family: IRANSans;
+}
+
+body {
+    background: url('https://i.ya-webdesign.com/images/website-background-png.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 0 15px;
+    display: flex;
+    direction: rtl;
+    justify-content: center;
+}
+
+.user-card {
+    width: 200px;
+    height: 450px;
+    background-color: white;
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12), 0 1px 6px 0 rgba(0,0,0,.12);
+    padding: 16px;
+}
+
+.panel-card {
+    margin-right: 15px;
+    width: 650px;
+    height: 450px;
+    background-color: white;
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.12), 0 1px 6px 0 rgba(0,0,0,.12);
+    padding: 16px;
+}
+
+.user-card img {
+    object-fit: cover;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: block;
+}
+
+.user-card p {
+    font-weight: bold;
+    display: block;
+    text-align: center;
+}
+
+.action-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    
+}
+
+.action-list li {
+    padding: 5px;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+
+.action-list li:hover {
+    background-color: #aeaeae;
+}
+
+.login-card {
+    margin: 0 auto;
+    padding: 16px;
+
+}
