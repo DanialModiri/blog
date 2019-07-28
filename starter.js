@@ -38,12 +38,13 @@ async function addTree() {
         { _id: ids[10], title: 'آشپزخانه', parent: ids[9] },
         { _id: ids[11], title: 'لوازم برقی', parent: ids[10] }
     ];
-    await Category.insertMany(tree);
+    await Category.insertMany(tree, { s });
 }
 
 mongoose.connect('mongodb://localhost:27017/blog', async () => {
     await addAdmin();
     await addTree();
+    mongoose.disconnect();
 })
 
 

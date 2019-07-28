@@ -8,6 +8,7 @@ module.exports.authMiddleware = (req, res, next) => {
     const token = jwt.decode(req.cookies['token'], jwtKey);
     if (!token)
         return res.status(401).send('INvalid Token');
+    req.user = token;
     next();
 }
 
