@@ -1,5 +1,6 @@
 
 
 module.exports = {
-    jwtKey: 'DanialModiri'
+    jwtKey: 'DanialModiri',
+    jwtKeyForUsers: 'Abbas'
 }

@@ -12,6 +12,8 @@ const admin = require('./routes/admin')
 const cookiesParser = require('cookie-parser')
 const { adminAuth } = require('./routes/middlewares/adminmiddleware')
 const category = require('./routes/categories')
+const comments = require('./routes/comments');
+const user = require('./routes/user')
 
 mongoose.connect('mongodb://localhost:27017/blog')
 
@@ -19,19 +21,14 @@ app.use(express.static('./public'));
 app.use(cookiesParser())
 app.use(bodyParser.json());
 app.use(expressLayout);
+app.use('/user', user);
 app.use('/admin_public', adminAuth, express.static('./admin_scripts'));
 app.set('view engine', 'ejs');
-
-app.get('/', (req, res) => {
-    res.locals.user = {
-        avatar: 'http://www.anupambharatonline.com/photonews/1557856456.jpg',
-        username: 'Danial Modiri'
-    }
-    res.render('profile');
-})
 app.use('/articles', articles);
 app.use('/admin', admin);
 app.use('/categories', category);
+app.use('/comments', comments);
+
 app.use(mongoose_validator);
 app.use(last_validator);
 

@@ -85,21 +85,53 @@ function upload_edit_article_async(req, res) {
     })
 }
 
+function parseQuery(value) {
+    if (!isNaN(value))
+        return parseInt(value);
+    if (Array.isArray(value))
+        return { $in: value.map(item => parseQuery(item)) };
+    return value;
+}
+
+router.get('/', async (req, res) => {
+    const { sort = 'date', page = 1, ...query } = req.query;
+
+    for (const [key, value] of Object.entries(query)) {
+        query[key] = parseQuery(value);
+    }
+
+    const articlesQuery = [
+        {
+            $addFields: {
+                day: { $dayOfWeek: '$date' }
+            }
+        },
+        {
+            $match: query
+        }
+    ]
+
+    const articles = await Article.aggregate(articlesQuery).sort({ [sort]: -1 }).skip( (page - 1) * 10).limit(10).exec();
+    const articlesCount = await Article.aggregate(articlesQuery).count('count');
+
+    res.send({ count: articlesCount[0].count, page, articles });
+})
+
 router.put('/:id', adminAuth, async (req, res) => {
     const { new_images, image } = await upload_edit_article_async(req, res);
     let newImage = {};
-    if(image)
+    if (image)
         newImage = { image: image }
     let images = [];
-    if(Array.isArray(req.body.images) && req.body.images.length > 0)
+    if (Array.isArray(req.body.images) && req.body.images.length > 0)
         images = [...req.body.images, ...new_images];
-    else if(!req.body.images)
+    else if (!req.body.images)
         images = [...new_images]
     else
-        images = [req.body.images, ...new_images]    
-    console.log( { ...req.body, ...newImage, images: images } )
+        images = [req.body.images, ...new_images]
+    console.log({ ...req.body, ...newImage, images: images })
     const newArticle = await Article.findByIdAndUpdate(req.params.id,
-         { ...req.body, ...newImage, images: images } ,
+        { ...req.body, ...newImage, images: images },
         { new: true, runValidators: true, useFindAndModify: true }).exec();
     res.send(newArticle);
 })
@@ -109,9 +141,27 @@ router.get('/:id', async (req, res) => {
     res.send(article);
 })
 
+/*
 router.get('/', async (req, res) => {
-    const articles = await Article.find().exec();
-    res.send(articles);
+    const { sort = 'date', page, ...query } = req.query;
+    if (query.search) {
+        query.title = { $regex: '.*' + query.search + '.*' }
+        delete query.search;
+    }
+    console.log(query)
+    const articlesCount = await Article.find(query).count()
+    const articles = await Article.find(query)
+        .sort({ [sort]: -1 })
+        .skip((page - 1) * 10)
+        .limit(10)
+        .exec();
+    res.send({ count: articlesCount, page, articles });
+})
+*/
+
+
+router.get('/search', (req, res) => {
+
 })
 
 router.delete('/:id', adminAuth, role('SUPER_ADMIN'), async (req, res) => {
