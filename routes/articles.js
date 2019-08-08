@@ -94,11 +94,13 @@ function parseQuery(value) {
 }
 
 router.get('/', async (req, res) => {
-    const { sort = 'date', page = 1, ...query } = req.query;
+    const { sort = 'date', page = 1, perPage = 10, ...query } = req.query;
 
     for (const [key, value] of Object.entries(query)) {
         query[key] = parseQuery(value);
     }
+
+    console.log(query)
 
     const articlesQuery = [
         {
@@ -111,7 +113,7 @@ router.get('/', async (req, res) => {
         }
     ]
 
-    const articles = await Article.aggregate(articlesQuery).sort({ [sort]: -1 }).skip( (page - 1) * 10).limit(10).exec();
+    const articles = await Article.aggregate(articlesQuery).sort({ [sort]: -1 }).skip( (page - 1) * perPage).limit(perPage).exec();
     const articlesCount = await Article.aggregate(articlesQuery).count('count');
 
     res.send({ count: articlesCount[0].count, page, articles });
@@ -141,23 +143,6 @@ router.get('/:id', async (req, res) => {
     res.send(article);
 })
 
-/*
-router.get('/', async (req, res) => {
-    const { sort = 'date', page, ...query } = req.query;
-    if (query.search) {
-        query.title = { $regex: '.*' + query.search + '.*' }
-        delete query.search;
-    }
-    console.log(query)
-    const articlesCount = await Article.find(query).count()
-    const articles = await Article.find(query)
-        .sort({ [sort]: -1 })
-        .skip((page - 1) * 10)
-        .limit(10)
-        .exec();
-    res.send({ count: articlesCount, page, articles });
-})
-*/
 
 
 router.get('/search', (req, res) => {

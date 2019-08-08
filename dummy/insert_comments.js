@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Comment = require('../models/Comment')
 const fs = require('fs')
 
-const comments = fs.readFileSync('./dummy/COMMENTS_DATA.JSON');
+const comments = fs.readFileSync('./dummy/COMMENTS_DATA_PART_3.JSON');
 
 mongoose.connect('mongodb://localhost:27017/blog', async (err) => {
     //await Comment.remove({});

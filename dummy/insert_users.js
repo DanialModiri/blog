@@ -10,7 +10,7 @@ mongoose.connect('mongodb://localhost:27017/blog', async (err) => {
     console.log(JSON.parse(users).length)
     if (err)
         return console.log(err);
-    User.create(JSON.parse(users).slice(0,50)).then(res=> {
+    User.create(JSON.parse(users)).then(res=> {
         console.log('DONE!')
         mongoose.disconnect();
     }).catch(err => {

@@ -6,7 +6,8 @@ const ArticleSchema =  new mongoose.Schema({
     images: [String],
     image: String,
     views: {type: Number, min: 0},
-    date: {type: Date, default: Date.now}
+    date: {type: Date, default: Date.now},
+    tags: [String]
 })
 
 module.exports = mongoose.model('Article', ArticleSchema);

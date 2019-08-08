@@ -14,6 +14,8 @@ const { adminAuth } = require('./routes/middlewares/adminmiddleware')
 const category = require('./routes/categories')
 const comments = require('./routes/comments');
 const user = require('./routes/user')
+const home = require('./routes/home')
+const states = require('./routes/states')
 
 mongoose.connect('mongodb://localhost:27017/blog')
 
@@ -28,6 +30,8 @@ app.use('/articles', articles);
 app.use('/admin', admin);
 app.use('/categories', category);
 app.use('/comments', comments);
+app.use('/home', home);
+app.use('/states', states);
 
 app.use(mongoose_validator);
 app.use(last_validator);
