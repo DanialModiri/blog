@@ -94,10 +94,15 @@ function parseQuery(value) {
 }
 
 router.get('/', async (req, res) => {
-    const { sort = 'date', page = 1, perPage = 10, ...query } = req.query;
+    const { sort = 'date', sortDirection = -1, page = 1, perPage = 10, ...query } = req.query;
 
     for (const [key, value] of Object.entries(query)) {
         query[key] = parseQuery(value);
+    }
+
+    if(query.search){
+        query.title = { $regex: `.*${query.search}.*` }
+        delete query.search;
     }
 
     console.log(query)
@@ -113,10 +118,16 @@ router.get('/', async (req, res) => {
         }
     ]
 
-    const articles = await Article.aggregate(articlesQuery).sort({ [sort]: -1 }).skip( (page - 1) * perPage).limit(perPage).exec();
-    const articlesCount = await Article.aggregate(articlesQuery).count('count');
+    const articles = await Article.aggregate(articlesQuery).sort({ [sort]: sortDirection }).skip( (page - 1) * parseInt(perPage)).limit(parseInt(perPage)).exec();
+    
+    const articlesCount = await Article.aggregate([...articlesQuery, {
+        $group: {
+            _id: '$_id',
+            count: { $sum: 1 }
+        }
+    }]);
 
-    res.send({ count: articlesCount[0].count, page, articles });
+    res.send({ count: (articlesCount[0] || {}).count || 0, page, articles });
 })
 
 router.put('/:id', adminAuth, async (req, res) => {
